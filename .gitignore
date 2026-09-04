@@ -1,0 +1,5 @@
+*.exe
+vizor-space
+*.syso
+save.dat
+highscores.dat

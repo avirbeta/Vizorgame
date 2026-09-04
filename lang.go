@@ -1,0 +1,218 @@
+package main
+
+// LangID — кодовое имя языка в наших текстовых таблицах.
+type LangID string
+
+const (
+	LangEN LangID = "en"
+	LangRU LangID = "ru"
+	LangUK LangID = "uk"
+	LangES LangID = "es"
+)
+
+// langOrder — порядок и «самоназвание» языков на первом экране мастера.
+var langOrder = []struct {
+	ID   LangID
+	Self string
+}{
+	{LangEN, "English"},
+	{LangRU, "Русский"},
+	{LangUK, "Українська"},
+	{LangES, "Español"},
+}
+
+// texts — все строки интерфейса. Ключ — смысл фразы, чтобы легко
+// добавлять новые языки без переделки всего кода.
+var texts = map[LangID]map[string]string{
+	LangEN: {
+		"selLang":    "Choose your language:",
+		"askName":    "Enter your name:",
+		"pressEnter": "Press Enter to continue",
+		"emptyName":  "Name cannot be empty!",
+		"hi":         "Hi, %s!",
+		"play":       "Play",
+		"settings":   "Settings",
+		"exit":       "Exit",
+		"language":   "Language:",
+		"saved":      "Saved!",
+		"back":       "Back",
+		"score":      "Score",
+		"lives":      "Lives",
+		"record":     "Best",
+		"win":        "You win, %s!",
+		"lose":       "Game over, %s!",
+		"again":      "Space — play again",
+		"backMenu":   "Esc — menu",
+		"hintMove":   "← → / A,D — move · Space — shoot",
+		"version":    "Vizor Space",
+		"help":       "How to play",
+		"controls":   "Controls",
+		"goal":       "Goal",
+		"goalText":   "Blow up falling asteroids and survive as long as you can. The level grows with every 10 rocks and the pace speeds up. You have 3 lives.",
+		"kLeft":      "Move left",
+		"kRight":     "Move right",
+		"kShoot":     "Shoot",
+		"kBack":      "Back / menu",
+		"bindNow":    "Press a new key…",
+		"resetKeys":  "Reset keys",
+		"resetDone":  "Keys reset!",
+		"difficulty": "Difficulty:",
+		"dEasy":      "Easy",
+		"dNormal":    "Normal",
+		"dHard":      "Hard",
+		"level":      "Level",
+		"records":    "Records",
+		"noRecords":  "No records yet. Fly!",
+		"pause":      "Paused",
+		"pauseHint":  "Esc or P — resume",
+		"pilot":      "Pilot",
+		"nameBtn":    "Change name",
+	},
+	LangRU: {
+		"selLang":    "Выберите язык:",
+		"askName":    "Введите ваше имя:",
+		"pressEnter": "Нажмите Enter, чтобы продолжить",
+		"emptyName":  "Имя не может быть пустым!",
+		"hi":         "Привет, %s!",
+		"play":       "Играть",
+		"settings":   "Настройки",
+		"exit":       "Выйти",
+		"language":   "Язык:",
+		"saved":      "Сохранено!",
+		"back":       "Назад",
+		"score":      "Счёт",
+		"lives":      "Жизни",
+		"record":     "Рекорд",
+		"win":        "Победа, %s!",
+		"lose":       "Поражение, %s!",
+		"again":      "Пробел — сыграть ещё",
+		"backMenu":   "Esc — в меню",
+		"hintMove":   "← → / A,D — движение · Пробел — огонь",
+		"version":    "Vizor Space",
+		"help":       "Инструкция",
+		"controls":   "Управление",
+		"goal":       "Цель",
+		"goalText":   "Сбивай падающие астероиды и держись как можно дольше. Уровень растёт через каждые 10 глыб, темп ускоряется. В запасе 3 жизни.",
+		"kLeft":      "Влево",
+		"kRight":     "Вправо",
+		"kShoot":     "Огонь",
+		"kBack":      "Назад / меню",
+		"bindNow":    "Нажмите новую клавишу…",
+		"resetKeys":  "Сбросить клавиши",
+		"resetDone":  "Клавиши сброшены!",
+		"difficulty": "Сложность:",
+		"dEasy":      "Просто",
+		"dNormal":    "Обычно",
+		"dHard":      "Сложно",
+		"level":      "Уровень",
+		"records":    "Рекорды",
+		"noRecords":  "Пока нет рекордов. Полетели!",
+		"pause":      "Пауза",
+		"pauseHint":  "Esc или P — продолжить",
+		"pilot":      "Пилот",
+		"nameBtn":    "Сменить имя",
+	},
+	LangUK: {
+		"selLang":    "Оберіть мову:",
+		"askName":    "Введіть ваше ім'я:",
+		"pressEnter": "Натисніть Enter, щоб продовжити",
+		"emptyName":  "Ім'я не може бути порожнім!",
+		"hi":         "Привіт, %s!",
+		"play":       "Грати",
+		"settings":   "Налаштування",
+		"exit":       "Вийти",
+		"language":   "Мова:",
+		"saved":      "Збережено!",
+		"back":       "Назад",
+		"score":      "Рахунок",
+		"lives":      "Життя",
+		"record":     "Рекорд",
+		"win":        "Перемога, %s!",
+		"lose":       "Поразка, %s!",
+		"again":      "Пробіл — ще раз",
+		"backMenu":   "Esc — у меню",
+		"hintMove":   "← → / A,D — рух · Пробіл — постріл",
+		"version":    "Vizor Space",
+		"help":       "Інструкція",
+		"controls":   "Керування",
+		"goal":       "Мета",
+		"goalText":   "Збивай падаючі астероїди й тримайся якомога довше. Рівень росте через кожні 10 брил, темп пришвидшується. У запасі 3 життя.",
+		"kLeft":      "Вліво",
+		"kRight":     "Вправо",
+		"kShoot":     "Постріл",
+		"kBack":      "Назад / меню",
+		"bindNow":    "Натисніть нову клавішу…",
+		"resetKeys":  "Скинути клавіші",
+		"resetDone":  "Клавіші скинуто!",
+		"difficulty": "Складність:",
+		"dEasy":      "Легко",
+		"dNormal":    "Звичайно",
+		"dHard":      "Складно",
+		"level":      "Рівень",
+		"records":    "Рекорди",
+		"noRecords":  "Рекордів ще немає. Політаємо!",
+		"pause":      "Пауза",
+		"pauseHint":  "Esc або P — продовжити",
+		"pilot":      "Пілот",
+		"nameBtn":    "Змінити ім'я",
+	},
+	LangES: {
+		"selLang":    "Elige tu idioma:",
+		"askName":    "Introduce tu nombre:",
+		"pressEnter": "Pulsa Enter para continuar",
+		"emptyName":  "¡El nombre no puede estar vacío!",
+		"hi":         "¡Hola, %s!",
+		"play":       "Jugar",
+		"settings":   "Ajustes",
+		"exit":       "Salir",
+		"language":   "Idioma:",
+		"saved":      "¡Guardado!",
+		"back":       "Atrás",
+		"score":      "Puntuación",
+		"lives":      "Vidas",
+		"record":     "Récord",
+		"win":        "¡Victoria, %s!",
+		"lose":       "¡Derrota, %s!",
+		"again":      "Espacio — jugar de nuevo",
+		"backMenu":   "Esc — menú",
+		"hintMove":   "← → / A,D — mover · Espacio — disparar",
+		"version":    "Vizor Space",
+		"help":       "Cómo jugar",
+		"controls":   "Controles",
+		"goal":       "Objetivo",
+		"goalText":   "Destruye los asteroides que caen y aguanta el mayor tiempo posible. El nivel sube cada 10 rocas y el ritmo se acelera. Tienes 3 vidas.",
+		"kLeft":      "Izquierda",
+		"kRight":     "Derecha",
+		"kShoot":     "Disparar",
+		"kBack":      "Atrás / menú",
+		"bindNow":    "Pulsa una tecla nueva…",
+		"resetKeys":  "Restablecer teclas",
+		"resetDone":  "¡Teclas restablecidas!",
+		"difficulty": "Dificultad:",
+		"dEasy":      "Fácil",
+		"dNormal":    "Normal",
+		"dHard":      "Difícil",
+		"level":      "Nivel",
+		"records":    "Récords",
+		"noRecords":  "Aún no hay récords. ¡A volar!",
+		"pause":      "Pausa",
+		"pauseHint":  "Esc o P — reanudar",
+		"pilot":      "Piloto",
+		"nameBtn":    "Cambiar nombre",
+	},
+}
+
+// t — короткая фабрика строки по ключу для текущего языка игры.
+func (g *Game) t(key string) string {
+	m, ok := texts[g.langID]
+	if !ok {
+		m = texts[LangEN]
+	}
+	if s, ok := m[key]; ok {
+		return s
+	}
+	if s, ok := texts[LangEN][key]; ok {
+		return s
+	}
+	return "?"
+}
