@@ -133,16 +133,16 @@ func (g *Game) drawMenu(screen *ebiten.Image) {
 
 // drawSettings — экран настроек: язык, сложность и переназначение клавиш.
 func (g *Game) drawSettings(screen *ebiten.Image) {
-	drawStringShadow(screen, g.t("settings"), screenW/2, 52, 34, clrText)
+	drawStringShadow(screen, g.t("settings"), screenW/2, 30, 34, clrText)
 	for _, b := range g.nameBtn {
 		b.draw(screen, fmt.Sprintf("%s: %s", g.t("pilot"), g.name))
 	}
-	drawString(screen, g.t("language"), screenW/2, 92, 22, clrDim)
+	drawString(screen, g.t("language"), screenW/2, 118, 22, clrDim)
 	for _, b := range g.setBtns {
 		b.draw(screen, b.selfName)
 	}
 
-	drawString(screen, g.t("difficulty"), screenW/2, 226, 22, clrDim)
+	drawString(screen, g.t("difficulty"), screenW/2, 190, 22, clrDim)
 	for _, b := range g.diffBtns {
 		b.draw(screen, g.t(b.key))
 		if b.val == g.diff {
@@ -150,15 +150,15 @@ func (g *Game) drawSettings(screen *ebiten.Image) {
 		}
 	}
 
-	drawString(screen, g.t("controls"), screenW/2, 318, 22, clrDim)
+	drawString(screen, g.t("controls"), screenW/2, 264, 22, clrDim)
 	for i, act := range actionOrder {
 		g.drawCtrlRow(screen, act, i)
 	}
 
 	if g.recAct != "" {
-		drawString(screen, g.t("bindNow"), screenW/2, 602, 22, clrAccent)
+		drawString(screen, g.t("bindNow"), screenW/2, 560, 22, clrAccent)
 	} else if g.flash > 0 {
-		drawString(screen, g.t(g.flashMsg), screenW/2, 602, 22, clrWin)
+		drawString(screen, g.t(g.flashMsg), screenW/2, 560, 22, clrWin)
 	}
 
 	for _, b := range g.resetBtn {
@@ -223,12 +223,12 @@ func (g *Game) drawHelp(screen *ebiten.Image) {
 // геометрия рядов управления и плашек-клавиш в настройках:
 // вынес в константы, потому что при каждой переделке всё съезжает
 const (
-	ctrlRowTop0 = 354.0
-	ctrlRowH    = 50.0
-	ctrlRowGap  = 10.0
+	ctrlRowTop0 = 296.0
+	ctrlRowH    = 44.0
+	ctrlRowGap  = 8.0
 	chipX0      = 790.0
 	chipW       = 150.0
-	chipH       = 36.0
+	chipH       = 34.0
 	chipGap     = 18.0
 )
 

@@ -1,0 +1,37 @@
+name: Go CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Install Ebiten system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            xvfb libgl1-mesa-dev xorg-dev libasound2-dev
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Tests (headless)
+        run: xvfb-run -a go test ./...
+
+      - name: Build Linux binary
+        run: go build -trimpath -ldflags="-s -w" -o vizor-space .
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: vizor-space-linux
+          path: vizor-space

@@ -427,5 +427,5 @@ func fillTriangle(screen *ebiten.Image, ax, ay, bx, by, cx, cy float32, col colo
 		vs[i].ColorB = float32(cb) / 65535
 		vs[i].ColorA = float32(ca) / 65535
 	}
-	screen.DrawTriangles(vs, is, whiteImg, nil)
+	screen.DrawTriangles(vs, is, whiteImage(), nil)
 }

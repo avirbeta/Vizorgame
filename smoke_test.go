@@ -9,9 +9,15 @@ import (
 
 func TestSmokeNewCode(t *testing.T) {
 	t.Run("decodeShippedSave", func(t *testing.T) {
-		lang, name, km, diff, ok := readSave("save.dat")
+		dir := t.TempDir()
+		path := filepath.Join(dir, "save.dat")
+		if !writeSave(path, LangRU, "1", defaultKeyMap(), DiffNormal) {
+			t.Fatal("writeSave не записал профиль")
+		}
+
+		lang, name, km, diff, ok := readSave(path)
 		if !ok {
-			t.Fatalf("readSave не прочитал shipped save.dat")
+			t.Fatalf("readSave не прочитал сохранённый профиль")
 		}
 		if lang != LangRU || name != "1" {
 			t.Fatalf("lang=%q name=%q", lang, name)

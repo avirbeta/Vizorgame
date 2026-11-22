@@ -32,9 +32,13 @@ assets/      ..... шрифт DejaVu Sans (кириллица и не тольк
 
 СБОРКА
 ------
-Нужны Go и (для Windows-версии) mingw-w64.
+Нужны Go 1.24+ и (для Windows-версии) mingw-w64.
+Для Linux нужны заголовки X11/OpenGL и ALSA:
+
+  sudo apt install libgl1-mesa-dev xorg-dev libasound2-dev
 
   Linux:   go build -o vizor-space .
+  Тесты:   xvfb-run -a go test ./...
   Windows: CGO_ENABLED=1 GOOS=windows CC=x86_64-w64-mingw32-gcc \
            go build -ldflags="-s -w -H=windowsgui" -o VizorSpace.exe .
   Всё сразу и установщик: bash build.sh

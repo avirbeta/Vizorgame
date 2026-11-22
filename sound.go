@@ -4,6 +4,10 @@ import (
 	"bytes"
 	"math"
 	"math/rand"
+	"os"
+	"path/filepath"
+	"runtime"
+	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2/audio"
 )
@@ -38,13 +42,44 @@ func newSfx(vol float64) *sfxChip {
 	}
 }
 
+// audioAvailable сообщает, есть ли смысл создавать аудиоконтекст.
+// Без звуковой карты ebiten возвращает ошибку из RunGame и игра
+// завершается — а она должна работать и в тишине.
+func audioAvailable() bool {
+	if runtime.GOOS != "linux" {
+		return true
+	}
+	if _, err := os.Stat("/dev/snd"); err == nil {
+		return true
+	}
+	if dir := os.Getenv("XDG_RUNTIME_DIR"); dir != "" {
+		for _, name := range []string{"pulse/native", "pipewire-0"} {
+			if _, err := os.Stat(filepath.Join(dir, name)); err == nil {
+				return true
+			}
+		}
+	}
+	if server := os.Getenv("PULSE_SERVER"); strings.HasPrefix(server, "unix:") {
+		if _, err := os.Stat(strings.TrimPrefix(server, "unix:")); err == nil {
+			return true
+		}
+	}
+	return false
+}
+
 // PlayShoot — коротенький «пиу».
 func (s *sfxChip) PlayShoot() {
+	if s == nil {
+		return
+	}
 	letLoose(s.shoot, 0.55*s.vol)
 }
 
 // PlayBoom — развалившийся астероид.
 func (s *sfxChip) PlayBoom() {
+	if s == nil {
+		return
+	}
 	letLoose(s.boom, 0.8*s.vol)
 }
 

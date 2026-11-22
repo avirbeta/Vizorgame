@@ -18,8 +18,17 @@ var fontTTF []byte
 
 var gFontSource *text.GoTextFaceSource
 
-// whiteImg — белый пиксель; с него берём текстуру для заливки треугольников.
+// whiteImg — белый пиксель; создаётся лениво, чтобы пакет можно было
+// тестировать без графического контекста.
 var whiteImg *ebiten.Image
+
+func whiteImage() *ebiten.Image {
+	if whiteImg == nil {
+		whiteImg = ebiten.NewImage(1, 1)
+		whiteImg.Fill(color.White)
+	}
+	return whiteImg
+}
 
 func init() {
 	src, err := text.NewGoTextFaceSource(bytes.NewReader(fontTTF))
@@ -27,9 +36,6 @@ func init() {
 		panic(err)
 	}
 	gFontSource = src
-
-	whiteImg = ebiten.NewImage(1, 1)
-	whiteImg.Fill(color.White)
 }
 
 // face — короткий конструктор шрифтового лица нужного размера.

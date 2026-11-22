@@ -1,5 +1,6 @@
 *.exe
 vizor-space
+Vizorgame
 *.syso
 save.dat
 highscores.dat
