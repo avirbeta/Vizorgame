@@ -19,7 +19,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            xvfb libgl1-mesa-dev xorg-dev libasound2-dev
+            xvfb libgl1-mesa-dev xorg-dev libasound2-dev \
+            gcc-mingw-w64-x86-64
 
       - name: Vet
         run: go vet ./...
@@ -30,8 +31,15 @@ jobs:
       - name: Build Linux binary
         run: go build -trimpath -ldflags="-s -w" -o vizor-space .
 
-      - name: Upload binary
+      - name: Build Windows binary
+        run: |
+          CGO_ENABLED=1 GOOS=windows CC=x86_64-w64-mingw32-gcc \
+            go build -trimpath -ldflags="-s -w -H=windowsgui" -o VizorSpace.exe .
+
+      - name: Upload binaries
         uses: actions/upload-artifact@v4
         with:
-          name: vizor-space-linux
-          path: vizor-space
+          name: vizor-space-binaries
+          path: |
+            vizor-space
+            VizorSpace.exe
