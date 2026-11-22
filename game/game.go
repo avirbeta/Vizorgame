@@ -1,4 +1,4 @@
-package main
+package game
 
 import (
 	"fmt"
@@ -85,7 +85,7 @@ func leftRight(km KeyMap) float64 {
 func (a *Arcade) update(g *Game) {
 	if a.over {
 		// финальный экран ждёт действий игрока
-		if g.keys.justDown(actShoot) {
+		if g.keys.justDown(actShoot) || g.touchFireJust {
 			a.reset()
 		}
 		if g.keys.justDown(actBack) {
@@ -113,6 +113,18 @@ func (a *Arcade) update(g *Game) {
 
 	// движение корабля
 	dir := leftRight(g.keys)
+	if g.touchLeft {
+		dir--
+	}
+	if g.touchRight {
+		dir++
+	}
+	if dir < -1 {
+		dir = -1
+	}
+	if dir > 1 {
+		dir = 1
+	}
 	speed := 6.5
 	a.px += dir * speed
 	if a.px < 24 {
@@ -125,7 +137,7 @@ func (a *Arcade) update(g *Game) {
 
 	// стрельба
 	a.cooldown--
-	if g.keys.held(actShoot) && a.cooldown <= 0 {
+	if (g.keys.held(actShoot) || g.touchFire) && a.cooldown <= 0 {
 		a.bullets = append(a.bullets,
 			&slug{x: a.px, y: a.py - 24},
 			&slug{x: a.px, y: a.py - 24},

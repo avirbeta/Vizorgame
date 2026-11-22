@@ -1,4 +1,4 @@
-package main
+package game
 
 // LangID — кодовое имя языка в наших текстовых таблицах.
 type LangID string

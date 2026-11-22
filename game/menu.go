@@ -1,4 +1,4 @@
-package main
+package game
 
 import (
 	"fmt"
@@ -28,6 +28,13 @@ func (b *Button) update() {
 	b.hover = float64(mx) >= b.x && float64(mx) <= b.x+b.w &&
 		float64(my) >= b.y && float64(my) <= b.y+b.h
 	if b.hover && inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		b.onTap()
+	}
+}
+
+func (b *Button) touchAt(x, y int) {
+	if float64(x) >= b.x && float64(x) <= b.x+b.w &&
+		float64(y) >= b.y && float64(y) <= b.y+b.h {
 		b.onTap()
 	}
 }

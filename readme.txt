@@ -43,4 +43,20 @@ assets/      ..... шрифт DejaVu Sans (кириллица и не тольк
            go build -ldflags="-s -w -H=windowsgui" -o VizorSpace.exe .
   Всё сразу и установщик: bash build.sh
 
+ANDROID
+-------
+Нужны Android SDK (platform 35, build-tools 35), NDK 27, JDK 17
+и Gradle 8.14+.
+
+  go install github.com/hajimehoshi/ebiten/v2/cmd/ebitenmobile@v2.9.10
+  mkdir -p android/app/libs
+  ebitenmobile bind -target android -javapkg com.avirbeta.vizorspace \
+    -o android/app/libs/vizorgame.aar ./mobile
+  gradle -p android assembleDebug
+
+APK: android/app/build/outputs/apk/debug/app-debug.apk
+
+На телефоне управление экранное: ◀ ▶ двигают корабль, ● стреляет.
+Проверить тач-режим на компьютере можно с VIZOR_TOUCH=1.
+
 Лицензия — MIT, подробности в файле LICENSE.

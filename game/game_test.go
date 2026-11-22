@@ -1,4 +1,4 @@
-package main
+package game
 
 import (
 	"os"
@@ -67,5 +67,17 @@ func TestParsers(t *testing.T) {
 	}
 	if got := parseDiff("что-то"); got != DiffNormal {
 		t.Fatalf("неизвестная сложность должна стать normal, получено %q", got)
+	}
+}
+
+func TestTouchHit(t *testing.T) {
+	if !touchHit(touchLeftX, touchLeftY, touchLeftX, touchLeftY, touchButtonR) {
+		t.Fatal("центр кнопки должен попадать в кнопку")
+	}
+	if !touchHit(touchLeftX+touchButtonR, touchLeftY, touchLeftX, touchLeftY, touchButtonR) {
+		t.Fatal("край кнопки должен попадать в кнопку")
+	}
+	if touchHit(touchLeftX+touchButtonR+1, touchLeftY, touchLeftX, touchLeftY, touchButtonR) {
+		t.Fatal("точка за кнопкой не должна попадать")
 	}
 }

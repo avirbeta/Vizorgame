@@ -4,3 +4,10 @@ Vizorgame
 *.syso
 save.dat
 highscores.dat
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/app/libs/*.aar
+android/local.properties

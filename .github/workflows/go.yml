@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  desktop:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,10 +36,59 @@ jobs:
           CGO_ENABLED=1 GOOS=windows CC=x86_64-w64-mingw32-gcc \
             go build -trimpath -ldflags="-s -w -H=windowsgui" -o VizorSpace.exe .
 
-      - name: Upload binaries
+      - name: Upload desktop binaries
         uses: actions/upload-artifact@v4
         with:
           name: vizor-space-binaries
           path: |
             vizor-space
             VizorSpace.exe
+
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK and NDK
+        run: |
+          SDK_ROOT="${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_SDK_ROOT=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "ANDROID_NDK_HOME=$SDK_ROOT/ndk/27.2.12479018" >> "$GITHUB_ENV"
+          SDKMANAGER=$(ls "$SDK_ROOT"/cmdline-tools/*/bin/sdkmanager | tail -n 1)
+          yes | "$SDKMANAGER" --licenses > /dev/null || true
+          "$SDKMANAGER" "platform-tools" "platforms;android-35" "build-tools;35.0.0" "ndk;27.2.12479018"
+
+      - name: Install ebitenmobile
+        run: go install github.com/hajimehoshi/ebiten/v2/cmd/ebitenmobile@v2.9.10
+
+      - name: Build Android AAR
+        run: |
+          mkdir -p android/app/libs
+          "$(go env GOPATH)/bin/ebitenmobile" bind \
+            -target android \
+            -javapkg com.avirbeta.vizorspace \
+            -o android/app/libs/vizorgame.aar ./mobile
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.14.3"
+
+      - name: Build debug APK
+        run: gradle -p android assembleDebug --no-daemon --stacktrace
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: vizor-space-android
+          path: android/app/build/outputs/apk/debug/*.apk
